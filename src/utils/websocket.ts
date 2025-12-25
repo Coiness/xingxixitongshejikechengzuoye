@@ -1,6 +1,6 @@
 import { usePlayerStore } from '../store/usePlayerStore';
 
-const WS_URL = 'ws://localhost:8080';
+const WS_URL = 'ws://197.167.0.18:8080';
 const RECONNECT_INTERVAL = 3000;
 const HEARTBEAT_INTERVAL = 30000;
 
@@ -13,7 +13,7 @@ let ws: WebSocket | null = null;
 let heartbeatTimer: NodeJS.Timeout | null = null;
 let reconnectTimer: NodeJS.Timeout | null = null;
 
-export const connectWebSocket = (navigate: (path: string) => void) => {
+export const connectWebSocket = () => {
   if (ws) return;
 
   console.log('Connecting to WebSocket...', WS_URL);
@@ -32,7 +32,7 @@ export const connectWebSocket = (navigate: (path: string) => void) => {
     try {
       const command: GestureCommand = JSON.parse(event.data);
       console.log('Received command:', command);
-      handleCommand(command, navigate);
+      handleCommand(command);
     } catch (error) {
       console.error('Failed to parse WebSocket message:', error);
     }
@@ -42,7 +42,7 @@ export const connectWebSocket = (navigate: (path: string) => void) => {
     console.log('WebSocket disconnected');
     stopHeartbeat();
     ws = null;
-    reconnectTimer = setTimeout(() => connectWebSocket(navigate), RECONNECT_INTERVAL);
+    reconnectTimer = setTimeout(() => connectWebSocket(), RECONNECT_INTERVAL);
   };
 
   ws.onerror = (error) => {
@@ -66,7 +66,7 @@ const stopHeartbeat = () => {
   }
 };
 
-const handleCommand = (command: GestureCommand, navigate: (path: string) => void) => {
+const handleCommand = (command: GestureCommand) => {
   const store = usePlayerStore.getState();
 
   switch (command.action) {
@@ -80,15 +80,7 @@ const handleCommand = (command: GestureCommand, navigate: (path: string) => void
       store.playNext();
       break;
     case 'toggle_list':
-      // Basic navigation logic based on current URL would be better, 
-      // but here we just toggle. 
-      // Since we are outside React component, we need a way to know current location or just force navigate.
-      // We passed 'navigate' function.
-      if (window.location.pathname === '/') {
-        navigate('/playlist');
-      } else {
-        navigate('/');
-      }
+      store.togglePlaylist();
       break;
     default:
       console.warn('Unknown command:', command.action);

@@ -5,7 +5,7 @@ import { Music, Disc } from 'lucide-react';
 
 export default function Player() {
   const audioRef = useRef<HTMLAudioElement>(null);
-  const { playlist, currentSongIndex, isPlaying, playNext, playPrevious, togglePlayPause } = usePlayerStore();
+  const { playlist, currentSongIndex, isPlaying, playNext, playPrevious, togglePlayPause, togglePlaylist } = usePlayerStore();
   const [progress, setProgress] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -63,8 +63,8 @@ export default function Player() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col items-center justify-center p-4">
-      <div className="w-full max-w-md bg-white dark:bg-gray-800 rounded-3xl shadow-xl overflow-hidden p-8">
+    <div className="flex-1 h-full bg-gray-50 dark:bg-gray-900 flex flex-col items-center justify-center p-4">
+      <div className="w-full max-w-md bg-white dark:bg-gray-800 rounded-3xl shadow-xl overflow-visible p-8">
         {/* Cover Art Placeholder */}
         <div className="aspect-square rounded-2xl bg-indigo-50 dark:bg-indigo-900/20 flex items-center justify-center mb-8 shadow-inner relative overflow-hidden group">
           <div className={`absolute inset-0 bg-gradient-to-tr from-indigo-500/20 to-purple-500/20 ${isPlaying ? 'animate-pulse' : ''}`} />
@@ -80,10 +80,10 @@ export default function Player() {
         {/* Song Info */}
         <div className="text-center mb-8">
           <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-2 truncate px-4">
-            {currentSong ? currentSong.name : 'No Song Playing'}
+            {currentSong ? currentSong.name : '暂无播放'}
           </h2>
           <p className="text-gray-500 dark:text-gray-400 font-medium">
-            {currentSong ? currentSong.artist : 'Select a song from playlist'}
+            {currentSong ? currentSong.artist : '请在歌单中选择一首歌曲'}
           </p>
         </div>
 
@@ -107,6 +107,7 @@ export default function Player() {
           onPlayPause={togglePlayPause}
           onPrevious={playPrevious}
           onNext={playNext}
+          onTogglePlaylist={togglePlaylist}
         />
 
         {/* Hidden Audio Element */}

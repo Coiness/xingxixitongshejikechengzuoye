@@ -6,6 +6,7 @@ interface PlayerState {
   currentSongIndex: number;
   isPlaying: boolean;
   isLoading: boolean;
+  showPlaylist: boolean;
   
   // Actions
   loadPlaylist: () => Promise<void>;
@@ -13,6 +14,7 @@ interface PlayerState {
   togglePlayPause: () => void;
   playNext: () => void;
   playPrevious: () => void;
+  togglePlaylist: () => void;
   addSongToPlaylist: (song: SongData) => void;
 }
 
@@ -21,6 +23,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   currentSongIndex: -1,
   isPlaying: false,
   isLoading: false,
+  showPlaylist: false,
 
   loadPlaylist: async () => {
     set({ isLoading: true });
@@ -68,5 +71,9 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
 
   addSongToPlaylist: (song) => {
     set((state) => ({ playlist: [...state.playlist, song] }));
+  },
+
+  togglePlaylist: () => {
+    set((state) => ({ showPlaylist: !state.showPlaylist }));
   },
 }));
