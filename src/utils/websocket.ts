@@ -1,6 +1,6 @@
 import { usePlayerStore } from '../store/usePlayerStore';
 
-const WS_URL = 'ws://197.167.0.18:8080';
+const WS_URL = 'ws://localhost:8080';
 const RECONNECT_INTERVAL = 3000;
 const HEARTBEAT_INTERVAL = 30000;
 
@@ -49,6 +49,16 @@ export const connectWebSocket = () => {
     console.error('WebSocket error:', error);
     ws?.close();
   };
+};
+
+export const sendCameraFrame = (frameData: string) => {
+  if (ws && ws.readyState === WebSocket.OPEN) {
+    ws.send(JSON.stringify({
+      type: 'camera_frame',
+      data: frameData,
+      timestamp: Date.now()
+    }));
+  }
 };
 
 const startHeartbeat = () => {
